@@ -26,11 +26,11 @@
     "client_class": "OpenAIClient",
     "batch_size": 10,
     "model_kwargs": {
-      "model": "${CUSTOM_OPENAI_EMBEDDING_MODEL}",
+      "model": "${EMBEDDING_MODEL_NAME}",
       "encoding_format": "float"
     },
-    "env_api_key_name": "CUSTOM_OPENAI_API_KEY",
-    "env_base_url_name": "CUSTOM_OPENAI_BASE_URL"
+    "env_api_key_name": "EMBEDDING_API_KEY",
+    "env_base_url_name": "EMBEDDING_BASE_URL"
   },
   "retriever": {
     "top_k": 20

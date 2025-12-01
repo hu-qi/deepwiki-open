@@ -40,7 +40,7 @@ DeepWiki-Open 深度利用 Git 的核心特性：
 ### 🎯 GitCode 优先支持
 
 - **GitCode 原生集成**：完美支持 GitCode 平台的公开和私有仓库
-- **访问令牌认证**：安全访问 GitCode 私有仓库（支持在 `.env` 中配置 `GITCODE_ACCESSTOKEN`）
+- **访问令牌认证**：安全访问 GitCode 私有仓库（支持在 `.env` 中配置 `NEXT_PUBLIC_GITCODE_ACCESSTOKEN`）
 - **中文社区优化**：针对中文开源社区优化的文档生成和问答体验
 
 ### 🚀 强大功能
@@ -85,14 +85,14 @@ git clone https://gitcode.com/huqi/deepwiki-open.git
 cd deepwiki-open
 
 # 2. 创建包含 API 密钥的 .env 文件
-echo "GOOGLE_API_KEY=your_google_api_key" > .env
-echo "OPENAI_API_KEY=your_openai_api_key" >> .env
+echo "CUSTOM_OPENAI_API_KEY=your_custom_api_key" > .env
+echo "CUSTOM_OPENAI_BASE_URL=your_base_url" >> .env
+echo "CUSTOM_OPENAI_MODEL_NAME=your_model_name" >> .env
+echo "CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model" >> .env
+echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
 
 # 推荐：配置 GitCode 访问令牌以支持私有仓库
-echo "GITCODE_ACCESSTOKEN=your_gitcode_token" >> .env
-
-# 可选：如果您想使用 OpenRouter 模型
-echo "OPENROUTER_API_KEY=your_openrouter_api_key" >> .env
+echo "NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token" >> .env
 
 # 3. 使用 Docker Compose 运行
 docker-compose up
@@ -112,11 +112,16 @@ docker-compose up
 
 ```bash
 # 必需的 API 密钥（至少配置一个）
-GOOGLE_API_KEY=your_google_api_key
-OPENAI_API_KEY=your_openai_api_key
+# GOOGLE_API_KEY=your_google_api_key
+# OPENAI_API_KEY=your_openai_api_key
+CUSTOM_OPENAI_API_KEY=your_custom_api_key
+CUSTOM_OPENAI_BASE_URL=your_base_url
+CUSTOM_OPENAI_MODEL_NAME=your_model_name
+CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model
+DEEPWIKI_EMBEDDER_TYPE=custom_openai
 
 # GitCode 配置（推荐）
-GITCODE_ACCESSTOKEN=your_gitcode_token
+NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token
 
 # 可选配置
 OPENROUTER_API_KEY=your_openrouter_api_key
@@ -130,7 +135,7 @@ OPENAI_BASE_URL=https://custom-api-endpoint.com/v1  # 可选，用于自定义 O
 python -m pip install poetry==2.0.1 && poetry install
 
 # 激活虚拟环境并启动 API 服务器
-source .venv/bin/activate && python -m api.main
+source .venv/bin/activate && .venv/bin/python -m api.main
 ```
 
 > 💡 后端 API 服务器将在 `http://localhost:8001` 启动
@@ -190,7 +195,7 @@ yarn dev
 为了方便使用，可以在 `.env` 文件中预先配置 GitCode 访问令牌：
 
 ```bash
-GITCODE_ACCESSTOKEN=your_gitcode_token
+NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token
 ```
 
 配置后，前端界面会自动使用该令牌访问 GitCode 私有仓库。
@@ -202,9 +207,10 @@ GITCODE_ACCESSTOKEN=your_gitcode_token
 GOOGLE_API_KEY=your_google_api_key        # Google Gemini 模型必需
 OPENAI_API_KEY=your_openai_api_key        # OpenAI 模型必需或用于 embeddings
 OPENROUTER_API_KEY=your_openrouter_api_key # OpenRouter 模型必需
+CUSTOM_OPENAI_API_KEY=your_custom_api_key # 自定义 custom_openai 密钥
 
 # ====== GitCode 配置（强烈推荐）======
-GITCODE_ACCESSTOKEN=your_gitcode_token    # GitCode 私有仓库访问令牌
+NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token    # GitCode 私有仓库访问令牌
 
 # ====== OpenAI API 基础 URL 配置（可选）======
 OPENAI_BASE_URL=https://custom-api-endpoint.com/v1
@@ -247,8 +253,6 @@ DEEPWIKI_AUTH_CODE=your_secret_code  # 授权码
 #### 常见解决方案
 
 1. 重启前端和后端服务器
-
-````
 2. 检查浏览器控制台日志查看 JavaScript 错误
 3. 查看 API 终端的 Python 错误日志
 
@@ -340,7 +344,7 @@ graph TD
     style Embed fill:#ffd43b,stroke:#f59f00,stroke-width:2px
     style Generate fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
     style Interactive fill:#a78bfa,stroke:#7c3aed,stroke-width:3px
-````
+```
 
 ### 💻 系统架构组成
 
@@ -573,7 +577,7 @@ DEEPWIKI_AUTH_CODE=your_secret_code  # 设置授权码
 
 - 默认选择 GitCode 平台
 - 专门优化 GitCode 私有仓库访问
-- 支持在 `.env` 中预配置 `GITCODE_ACCESSTOKEN`
+- 支持在 `.env` 中预配置 `NEXT_PUBLIC_GITCODE_ACCESSTOKEN`
 
 #### 4️⃣ 可视化增强
 
@@ -624,9 +628,6 @@ DEEPWIKI_AUTH_CODE=your_secret_code  # 设置授权码
 - 为 bug 或功能请求开 issue
 - 提交 pull request 改进代码
 - 分享您的反馈和想法
-
-[![Twitter/X](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/sashimikun_void)
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/VQMBGR8u5v)
 
 ---
 

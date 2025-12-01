@@ -196,7 +196,10 @@ async def handle_websocket_chat(websocket: WebSocket):
                     # This will use the actual RAG implementation
                     retrieved_documents = request_rag(rag_query, language=request.language)
 
-                    if retrieved_documents and retrieved_documents[0].documents:
+                    # Check if retrieved_documents is None (error case)
+                    if retrieved_documents is None:
+                        logger.warning("RAG call returned None (error occurred)")
+                    elif retrieved_documents and len(retrieved_documents) > 0 and hasattr(retrieved_documents[0], 'documents') and retrieved_documents[0].documents:
                         # Format context for the prompt in a more structured way
                         documents = retrieved_documents[0].documents
                         logger.info(f"Retrieved {len(documents)} documents")
@@ -474,10 +477,11 @@ This file contains...
                 model_type=ModelType.LLM
             )
         elif request.provider == "openai" or request.provider == "custom_openai":
-            logger.info(f"Using OpenAI-compatible protocol with model: {request.model}")
-
             # Replace environment variable placeholders in model name
             request.model = replace_env_placeholders(request.model)
+            
+            logger.info(f"Using OpenAI-compatible protocol with model: {request.model}")
+
 
             # Get full model config including client init kwargs
             full_model_config = get_model_config(request.provider, request.model)
@@ -699,7 +703,7 @@ This file contains...
                             logger.error(f"Error with OpenRouter API fallback: {str(e_fallback)}")
                             error_msg = f"\nError with OpenRouter API fallback: {str(e_fallback)}\n\nPlease check that you have set the OPENROUTER_API_KEY environment variable with a valid API key."
                             await websocket.send_text(error_msg)
-                    elif request.provider == "openai":
+                    elif request.provider == "openai" or request.provider == "custom_openai":
                         try:
                             # Create new api_kwargs with the simplified prompt
                             fallback_api_kwargs = model.convert_inputs_to_api_kwargs(

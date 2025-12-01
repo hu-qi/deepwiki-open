@@ -397,8 +397,22 @@ def get_model_config(provider="google", model=None):
     if model in provider_config.get("models", {}):
         model_params = provider_config["models"][model]
     else:
+        # Model not found in configuration - use default model's params as fallback
         default_model = provider_config.get("default_model")
-        model_params = provider_config["models"][default_model]
+        if default_model:
+            # Only use default model params if it exists and isn't a placeholder
+            if default_model in provider_config.get("models", {}):
+                logger.info(f"Model '{model}' not in configuration, using parameters from default model '{default_model}'")
+                model_params = provider_config["models"][default_model]
+            else:
+                # Default model itself isn't in the list (e.g., it's a placeholder like ${CUSTOM_OPENAI_MODEL_NAME})
+                # Use generic fallback parameters
+                logger.warning(f"Model '{model}' not in configuration and default model '{default_model}' is not available, using generic fallback parameters")
+                model_params = {"temperature": 0.7, "top_p": 0.8}
+        else:
+            # No default model specified, use generic fallback
+            logger.warning(f"Model '{model}' not in configuration and no default model specified, using generic fallback parameters")
+            model_params = {"temperature": 0.7, "top_p": 0.8}
 
     # Prepare base configuration
     result = {
