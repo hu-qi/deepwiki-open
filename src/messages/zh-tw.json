@@ -20,7 +20,7 @@
   "home": {
     "welcome": "歡迎使用 DeepWiki",
     "welcomeTagline": "為程式碼儲存庫提供 AI 驅動的文件",
-    "description": "只需一次點擊，即可從 GitHub、GitLab 或 Bitbucket 儲存庫產生全面的文件。",
+    "description": "只需一次點擊，即可從 GitCode、GitHub、GitLab 或 Bitbucket 儲存庫產生全面的文件。",
     "quickStart": "快速開始",
     "enterRepoUrl": "請以下列格式之一輸入儲存庫 URL：",
     "advancedVisualization": "使用 Mermaid 圖表進行進階視覺化",

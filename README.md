@@ -7,7 +7,7 @@
 
 **DeepWiki-Open** - 基于 Git 原理的智能文档自动生成工具，为 **GitCode**、GitHub、GitLab 等任何 Git 代码仓库自动创建美观、交互式的 Wiki 文档
 
-![DeepWiki 横幅](screenshots/Deepwiki.png)
+<video src="screenshots/deepwiki-gitcode.mp4" controls></video>
 
 ## 📋 赛题背景与项目定位
 

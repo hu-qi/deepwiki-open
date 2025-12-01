@@ -20,7 +20,7 @@
   "home": {
     "welcome": "欢迎使用DeepWiki",
     "welcomeTagline": "为代码仓库提供AI驱动的文档",
-    "description": "只需一次点击，即可从GitHub、GitLab或Bitbucket仓库生成全面的文档。",
+    "description": "只需一次点击，即可从 GitCode、GitHub、GitLab或Bitbucket仓库生成全面的文档。",
     "quickStart": "快速开始",
     "enterRepoUrl": "请以下列格式之一输入仓库URL：",
     "advancedVisualization": "使用Mermaid图表进行高级可视化",
