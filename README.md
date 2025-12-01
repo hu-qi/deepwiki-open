@@ -1,7 +1,8 @@
 # DeepWiki-Open
 
 > **🏆 开源创新大赛参赛作品**  
-> **赛题一：基于 Git 原理的实用性插件与应用开发 - Git 创新应用方向**
+> **赛题一：基于 Git 原理的实用性插件与应用开发 - Git 创新应用方向**.  
+> **访问地址：[https://gitcode.huqi.host/](https://gitcode.huqi.host/)**
 
 ## 项目名称
 
@@ -197,7 +198,10 @@ OPENAI_API_KEY=your_openai_api_key        # OpenAI 模型必需或用于 embeddi
 OPENROUTER_API_KEY=your_openrouter_api_key # OpenRouter 模型必需
 CUSTOM_OPENAI_API_KEY=your_custom_api_key # 自定义 custom_openai 密钥
 
-
+# Embedding 服务 (可以不同的 baseurl)
+EMBEDDING_API_KEY=YOUR_EMBEDDING_API_KEY
+EMBEDDING_BASE_URL=https://api.modelarts-maas.com/v1
+EMBEDDING_MODEL_NAME=bge-m3
 
 # ====== OpenAI API 基础 URL 配置（可选）======
 OPENAI_BASE_URL=https://custom-api-endpoint.com/v1
@@ -276,62 +280,7 @@ DeepWiki-Open 深度整合 Git 核心机制，实现智能文档自动化：
 
 ### 📊 系统工作流程
 
-```mermaid
-graph TD
-    Start[用户输入仓库URL] --> Platform{选择平台}
-    Platform -->|推荐| GitCode[GitCode 仓库]
-    Platform --> GitHub[GitHub 仓库]
-    Platform --> GitLab[GitLab 仓库]
-    Platform --> Other[其他 Git 平台]
-
-    GitCode --> Auth{私有仓库?}
-    GitHub --> Auth
-    GitLab --> Auth
-    Other --> Auth
-
-    Auth -->|是| Token[配置访问令牌]
-    Auth -->|否| Clone[Git Clone 克隆]
-    Token --> Clone
-
-    Clone --> Parse[Git 对象解析]
-    Parse --> Tree[遍历目录树]
-    Parse --> Commit[分析提交历史]
-    Parse --> Blob[读取文件内容]
-
-    Tree --> Structure[构建项目结构]
-    Commit --> Evolution[理解代码演进]
-    Blob --> Code[代码语义分析]
-
-    Structure --> Embed[向量嵌入]
-    Evolution --> Embed
-    Code --> Embed
-
-    Embed --> AI{AI 模型选择}
-    AI -->|Google| Gemini[Gemini 模型]
-    AI -->|OpenAI| GPT[GPT 模型]
-    AI -->|OpenRouter| Router[OpenRouter]
-    AI -->|本地| Ollama[Ollama 模型]
-
-    Gemini --> Generate[生成文档内容]
-    GPT --> Generate
-    Router --> Generate
-    Ollama --> Generate
-
-    Generate --> Diagram[生成 Mermaid 图表]
-    Generate --> Wiki[组织 Wiki 结构]
-    Diagram --> Wiki
-
-    Wiki --> Interactive[交互式 DeepWiki]
-    Interactive --> QA[RAG 问答系统]
-    Interactive --> Research[深度研究功能]
-
-    style GitCode fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
-    style Clone fill:#4dabf7,stroke:#1971c2,stroke-width:2px
-    style Parse fill:#51cf66,stroke:#2f9e44,stroke-width:2px
-    style Embed fill:#ffd43b,stroke:#f59f00,stroke-width:2px
-    style Generate fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px
-    style Interactive fill:#a78bfa,stroke:#7c3aed,stroke-width:3px
-```
+![DeepWiki 工作流程](screenshots/deepwiki-workflow.png)
 
 ### 💻 系统架构组成
 
