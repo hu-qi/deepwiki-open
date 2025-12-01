@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface TokenInputProps {
@@ -24,15 +24,7 @@ export default function TokenInput({
 }: TokenInputProps) {
   const { messages: t } = useLanguage();
 
-  // Set default GitCode access token from environment variable
-  useEffect(() => {
-    if (selectedPlatform === 'gitcode' && !accessToken) {
-      const defaultGitCodeToken = process.env.NEXT_PUBLIC_GITCODE_ACCESSTOKEN;
-      if (defaultGitCodeToken) {
-        setAccessToken(defaultGitCodeToken);
-      }
-    }
-  }, [selectedPlatform, accessToken, setAccessToken]);
+
 
   const platformName = selectedPlatform.charAt(0).toUpperCase() + selectedPlatform.slice(1);
 

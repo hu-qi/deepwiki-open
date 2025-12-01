@@ -40,7 +40,7 @@ DeepWiki-Open 深度利用 Git 的核心特性：
 ### 🎯 GitCode 优先支持
 
 - **GitCode 原生集成**：完美支持 GitCode 平台的公开和私有仓库
-- **访问令牌认证**：安全访问 GitCode 私有仓库（支持在 `.env` 中配置 `NEXT_PUBLIC_GITCODE_ACCESSTOKEN`）
+- **访问令牌认证**：安全访问 GitCode 私有仓库
 - **中文社区优化**：针对中文开源社区优化的文档生成和问答体验
 
 ### 🚀 强大功能
@@ -91,8 +91,7 @@ echo "CUSTOM_OPENAI_MODEL_NAME=your_model_name" >> .env
 echo "CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model" >> .env
 echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
 
-# 推荐：配置 GitCode 访问令牌以支持私有仓库
-echo "NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token" >> .env
+
 
 # 3. 使用 Docker Compose 运行
 docker-compose up
@@ -120,8 +119,7 @@ CUSTOM_OPENAI_MODEL_NAME=your_model_name
 CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model
 DEEPWIKI_EMBEDDER_TYPE=custom_openai
 
-# GitCode 配置（推荐）
-NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token
+
 
 # 可选配置
 OPENROUTER_API_KEY=your_openrouter_api_key
@@ -190,16 +188,6 @@ yarn dev
 > 3. 创建新令牌，选择 `read_repository` 权限
 > 4. 复制生成的令牌（仅显示一次）
 
-#### 示例 3：在 .env 文件中预配置 GitCode 令牌
-
-为了方便使用，可以在 `.env` 文件中预先配置 GitCode 访问令牌：
-
-```bash
-NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token
-```
-
-配置后，前端界面会自动使用该令牌访问 GitCode 私有仓库。
-
 ### 环境变量说明
 
 ```bash
@@ -209,8 +197,7 @@ OPENAI_API_KEY=your_openai_api_key        # OpenAI 模型必需或用于 embeddi
 OPENROUTER_API_KEY=your_openrouter_api_key # OpenRouter 模型必需
 CUSTOM_OPENAI_API_KEY=your_custom_api_key # 自定义 custom_openai 密钥
 
-# ====== GitCode 配置（强烈推荐）======
-NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_token    # GitCode 私有仓库访问令牌
+
 
 # ====== OpenAI API 基础 URL 配置（可选）======
 OPENAI_BASE_URL=https://custom-api-endpoint.com/v1
@@ -577,7 +564,7 @@ DEEPWIKI_AUTH_CODE=your_secret_code  # 设置授权码
 
 - 默认选择 GitCode 平台
 - 专门优化 GitCode 私有仓库访问
-- 支持在 `.env` 中预配置 `NEXT_PUBLIC_GITCODE_ACCESSTOKEN`
+- 专门优化 GitCode 私有仓库访问
 
 #### 4️⃣ 可视化增强
 
