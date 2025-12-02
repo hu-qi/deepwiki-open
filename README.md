@@ -6,9 +6,10 @@
 
 ## 项目名称
 
-**DeepWiki-Open** - 基于 Git 原理的智能文档自动生成工具，为 **GitCode**、GitHub、GitLab 等任何 Git 代码仓库自动创建美观、交互式的 Wiki 文档
-
+**DeepWiki-Open** - 基于 Git 原理的智能文档自动生成工具，为 **GitCode**、GitHub、GitLab 等任何 Git 代码仓库自动创建美观、交互式的 Wiki 文档  
+演示视频：[https://www.bilibili.com/video/BV1XrSWBjEvr/](https://www.bilibili.com/video/BV1XrSWBjEvr/)  
 <video  width="640" height="360" controls>
+
    <source src="screenshots/deepwiki-gitcode.mp4" type="video/mp4">
    <source src="https://huqi-blog.obs.cn-north-4.myhuaweicloud.com:443/videos/deepwiki-gitcode.mp4" type="video/mp4">
    <source src="https://www.bilibili.com/video/BV1XrSWBjEvr/?share_source=copy_web&vd_source=28618d8b8e38d1775b1dc2ec9260545b">
