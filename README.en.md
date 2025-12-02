@@ -7,7 +7,6 @@
 **DeepWiki-Open** - An intelligent document generation tool based on Git principles, automatically creating beautiful, interactive Wiki documentation for **GitCode**, GitHub, GitLab, and any other Git repositories.
 
 <video  width="640" height="360" controls>
-   <source src="screenshots/deepwiki-gitcode.mp4">
    <source src="https://www.bilibili.com/video/BV1XrSWBjEvr/?share_source=copy_web&vd_source=28618d8b8e38d1775b1dc2ec9260545b">
 </video>
 
