@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@mermaid-js/mermaid', 'react-syntax-highlighter'],
   },
+  // Empty turbopack config acknowledges Turbopack usage (Next.js 16 default)
+  turbopack: {},
   // Reduce memory usage during build
   webpack: (config, { isServer }) => {
     if (!isServer) {
