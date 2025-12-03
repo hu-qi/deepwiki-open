@@ -28,7 +28,7 @@ COPY api/pyproject.toml .
 COPY api/poetry.lock .
 RUN python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip
 RUN pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-RUN python -m pip install poetry==2.0.1 --no-cache-dir && \
+RUN python -m pip install poetry==2.2.1 --no-cache-dir && \
     poetry config virtualenvs.create true --local && \
     poetry config virtualenvs.in-project true --local && \
     poetry config virtualenvs.options.always-copy --local true && \
