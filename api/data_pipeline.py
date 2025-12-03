@@ -229,13 +229,14 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
 
     logger.info(f"Reading documents from {path}")
 
-    def should_process_file(file_path: str, use_inclusion: bool, included_dirs: List[str], included_files: List[str],
+    def should_process_file(file_path: str, root_path: str, use_inclusion: bool, included_dirs: List[str], included_files: List[str],
                            excluded_dirs: List[str], excluded_files: List[str]) -> bool:
         """
         Determine if a file should be processed based on inclusion/exclusion rules.
 
         Args:
-            file_path (str): The file path to check
+            file_path (str): The absolute file path to check
+            root_path (str): The root directory of the repository
             use_inclusion (bool): Whether to use inclusion mode
             included_dirs (List[str]): List of directories to include
             included_files (List[str]): List of files to include
@@ -245,7 +246,14 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
         Returns:
             bool: True if the file should be processed, False otherwise
         """
-        file_path_parts = os.path.normpath(file_path).split(os.sep)
+        # Get relative path from repository root to avoid excluding the repository itself
+        try:
+            relative_path = os.path.relpath(file_path, root_path)
+        except ValueError:
+            # If relpath fails (e.g., different drives on Windows), use the full path
+            relative_path = file_path
+        
+        relative_path_parts = os.path.normpath(relative_path).split(os.sep)
         file_name = os.path.basename(file_path)
 
         if use_inclusion:
@@ -256,7 +264,7 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
             if included_dirs:
                 for included in included_dirs:
                     clean_included = included.strip("./").rstrip("/")
-                    if clean_included in file_path_parts:
+                    if clean_included in relative_path_parts:
                         is_included = True
                         break
 
@@ -282,10 +290,11 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
             # Exclusion mode: file must not be in excluded directories or match excluded files
             is_excluded = False
 
-            # Check if file is in an excluded directory
+            # Check if file is in an excluded directory using relative path
+            # This prevents the repository root directory name from being checked
             for excluded in excluded_dirs:
                 clean_excluded = excluded.strip("./").rstrip("/")
-                if clean_excluded in file_path_parts:
+                if clean_excluded in relative_path_parts:
                     is_excluded = True
                     break
 
@@ -303,7 +312,7 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
         files = glob.glob(f"{path}/**/*{ext}", recursive=True)
         for file_path in files:
             # Check if file should be processed based on inclusion/exclusion rules
-            if not should_process_file(file_path, use_inclusion_mode, included_dirs, included_files, excluded_dirs, excluded_files):
+            if not should_process_file(file_path, path, use_inclusion_mode, included_dirs, included_files, excluded_dirs, excluded_files):
                 continue
 
             try:
@@ -344,7 +353,7 @@ def read_all_documents(path: str, embedder_type: str = None, is_ollama_embedder:
         files = glob.glob(f"{path}/**/*{ext}", recursive=True)
         for file_path in files:
             # Check if file should be processed based on inclusion/exclusion rules
-            if not should_process_file(file_path, use_inclusion_mode, included_dirs, included_files, excluded_dirs, excluded_files):
+            if not should_process_file(file_path, path, use_inclusion_mode, included_dirs, included_files, excluded_dirs, excluded_files):
                 continue
 
             try:
