@@ -34,7 +34,7 @@ RUN python -m pip install poetry==2.2.1 --no-cache-dir && \
     poetry config virtualenvs.options.always-copy --local true && \
     poetry config installer.max-workers 10 && \
     POETRY_HTTP_TIMEOUT=120 POETRY_MAX_WORKERS=10 poetry install --no-interaction --no-ansi --only main && \
-    poetry cache clear --all .
+    poetry cache clear --all pypi
 
 # Use Python 3.11 as final image
 FROM python:3.11-slim
