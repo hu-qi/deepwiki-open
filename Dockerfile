@@ -32,8 +32,6 @@ RUN python -m pip install poetry==2.2.1 --no-cache-dir && \
     poetry config virtualenvs.create true --local && \
     poetry config virtualenvs.in-project true --local && \
     poetry config virtualenvs.options.always-copy --local true && \
-    poetry source add --priority=primary tuna https://pypi.tuna.tsinghua.edu.cn/simple && \
-    poetry source add --priority=supplemental aliyun https://mirrors.aliyun.com/pypi/simple && \
     poetry config installer.max-workers 10 && \
     POETRY_HTTP_TIMEOUT=120 POETRY_MAX_WORKERS=10 poetry install --no-interaction --no-ansi --only main && \
     poetry cache clear --all .
