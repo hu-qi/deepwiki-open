@@ -93,6 +93,12 @@ export default function Home() {
           setModel(config.model || '');
           setIsCustomModel(config.isCustomModel || false);
           setCustomModel(config.customModel || '');
+          setLlmBaseUrl(config.llmBaseUrl || '');
+          setLlmApiKey(config.llmApiKey || '');
+          setEmbedderType(config.embedderType || 'openai');
+          setEmbeddingBaseUrl(config.embeddingBaseUrl || '');
+          setEmbeddingApiKey(config.embeddingApiKey || '');
+          setEmbeddingModel(config.embeddingModel || '');
           setSelectedPlatform(config.selectedPlatform || 'gitcode');
           setExcludedDirs(config.excludedDirs || '');
           setExcludedFiles(config.excludedFiles || '');
@@ -126,6 +132,12 @@ export default function Home() {
   const [model, setModel] = useState<string>('');
   const [isCustomModel, setIsCustomModel] = useState<boolean>(false);
   const [customModel, setCustomModel] = useState<string>('');
+  const [llmBaseUrl, setLlmBaseUrl] = useState<string>('');
+  const [llmApiKey, setLlmApiKey] = useState<string>('');
+  const [embedderType, setEmbedderType] = useState<string>('openai');
+  const [embeddingBaseUrl, setEmbeddingBaseUrl] = useState<string>('');
+  const [embeddingApiKey, setEmbeddingApiKey] = useState<string>('');
+  const [embeddingModel, setEmbeddingModel] = useState<string>('');
 
   // Wiki type state - default to comprehensive view
   const [isComprehensiveView, setIsComprehensiveView] = useState<boolean>(true);
@@ -319,6 +331,12 @@ export default function Home() {
           model,
           isCustomModel,
           customModel,
+          llmBaseUrl,
+          llmApiKey,
+          embedderType,
+          embeddingBaseUrl,
+          embeddingApiKey,
+          embeddingModel,
           selectedPlatform,
           excludedDirs,
           excludedFiles,
@@ -363,6 +381,24 @@ export default function Home() {
     params.append('model', model);
     if (isCustomModel && customModel) {
       params.append('custom_model', customModel);
+    }
+    if (llmBaseUrl) {
+      params.append('llm_base_url', llmBaseUrl);
+    }
+    if (llmApiKey) {
+      params.append('llm_api_key', llmApiKey);
+    }
+    if (embedderType) {
+      params.append('embedder_type', embedderType);
+    }
+    if (embeddingBaseUrl) {
+      params.append('embedding_base_url', embeddingBaseUrl);
+    }
+    if (embeddingApiKey) {
+      params.append('embedding_api_key', embeddingApiKey);
+    }
+    if (embeddingModel) {
+      params.append('embedding_model', embeddingModel);
     }
     // Add file filters configuration
     if (excludedDirs) {
@@ -460,6 +496,18 @@ export default function Home() {
             setIsCustomModel={setIsCustomModel}
             customModel={customModel}
             setCustomModel={setCustomModel}
+            llmBaseUrl={llmBaseUrl}
+            setLlmBaseUrl={setLlmBaseUrl}
+            llmApiKey={llmApiKey}
+            setLlmApiKey={setLlmApiKey}
+            embedderType={embedderType}
+            setEmbedderType={setEmbedderType}
+            embeddingBaseUrl={embeddingBaseUrl}
+            setEmbeddingBaseUrl={setEmbeddingBaseUrl}
+            embeddingApiKey={embeddingApiKey}
+            setEmbeddingApiKey={setEmbeddingApiKey}
+            embeddingModel={embeddingModel}
+            setEmbeddingModel={setEmbeddingModel}
             selectedPlatform={selectedPlatform}
             setSelectedPlatform={setSelectedPlatform}
             accessToken={accessToken}

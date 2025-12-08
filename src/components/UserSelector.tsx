@@ -41,6 +41,20 @@ interface ModelSelectorProps {
   setIncludedDirs?: (value: string) => void;
   includedFiles?: string;
   setIncludedFiles?: (value: string) => void;
+
+  // Service configuration
+  llmBaseUrl?: string;
+  setLlmBaseUrl?: (value: string) => void;
+  llmApiKey?: string;
+  setLlmApiKey?: (value: string) => void;
+  embedderType?: string;
+  setEmbedderType?: (value: string) => void;
+  embeddingBaseUrl?: string;
+  setEmbeddingBaseUrl?: (value: string) => void;
+  embeddingApiKey?: string;
+  setEmbeddingApiKey?: (value: string) => void;
+  embeddingModel?: string;
+  setEmbeddingModel?: (value: string) => void;
 }
 
 export default function UserSelector({
@@ -62,12 +76,26 @@ export default function UserSelector({
   includedDirs = '',
   setIncludedDirs,
   includedFiles = '',
-  setIncludedFiles
+  setIncludedFiles,
+  llmBaseUrl = '',
+  setLlmBaseUrl,
+  llmApiKey = '',
+  setLlmApiKey,
+  embedderType = 'openai',
+  setEmbedderType,
+  embeddingBaseUrl = '',
+  setEmbeddingBaseUrl,
+  embeddingApiKey = '',
+  setEmbeddingApiKey,
+  embeddingModel = '',
+  setEmbeddingModel
 }: ModelSelectorProps) {
   // State to manage the visibility of the filters modal and filter section
   const [isFilterSectionOpen, setIsFilterSectionOpen] = useState(false);
   // State to manage filter mode: 'exclude' or 'include'
   const [filterMode, setFilterMode] = useState<'exclude' | 'include'>('exclude');
+  // Service configuration toggle
+  const [showServiceConfig, setShowServiceConfig] = useState(false);
   const { messages: t } = useLanguage();
 
   // State for model configurations from backend
@@ -370,6 +398,124 @@ next.config.js
                 {t.form?.useCustomModel || 'Use custom model'}
               </label>
             </div>
+          </div>
+        )}
+
+        {(setLlmBaseUrl || setLlmApiKey || setEmbeddingBaseUrl || setEmbeddingApiKey || setEmbeddingModel || setEmbedderType) && (
+          <div className="p-3 border border-[var(--border-color)]/70 rounded-md bg-[var(--background)]/30">
+            <button
+              type="button"
+              onClick={() => setShowServiceConfig(!showServiceConfig)}
+              className="flex items-center justify-between w-full text-sm font-medium text-[var(--foreground)]"
+            >
+              <span>{t.form?.serviceConfig || 'Model & Vector Service'}</span>
+              <span className="text-xs text-[var(--accent-primary)]">{showServiceConfig ? t.common?.hide || 'Hide' : t.common?.configure || 'Configure'}</span>
+            </button>
+
+            {showServiceConfig && (
+              <div className="mt-3 space-y-3">
+                {(setLlmBaseUrl || setLlmApiKey) && (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {setLlmBaseUrl && (
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                          {t.form?.llmBaseUrl || 'LLM Base URL'}
+                        </label>
+                        <input
+                          type="text"
+                          value={llmBaseUrl}
+                          onChange={(e) => setLlmBaseUrl(e.target.value)}
+                          placeholder="https://api.your-llm.com/v1"
+                          className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                        />
+                      </div>
+                    )}
+                    {setLlmApiKey && (
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                          {t.form?.llmApiKey || 'LLM API Key'}
+                        </label>
+                        <input
+                          type="password"
+                          value={llmApiKey}
+                          onChange={(e) => setLlmApiKey(e.target.value)}
+                          placeholder={t.form?.enterKey || 'Enter API key'}
+                          className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {(setEmbedderType || setEmbeddingBaseUrl || setEmbeddingApiKey || setEmbeddingModel) && (
+                  <div className="space-y-2">
+                    {setEmbedderType && (
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                          {t.form?.embeddingType || 'Vector Service Type'}
+                        </label>
+                        <select
+                          value={embedderType}
+                          onChange={(e) => setEmbedderType(e.target.value)}
+                          className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                        >
+                          <option value="openai">OpenAI</option>
+                          <option value="custom_openai">Custom OpenAI</option>
+                          <option value="google">Google</option>
+                          <option value="ollama">Ollama</option>
+                        </select>
+                      </div>
+                    )}
+
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {setEmbeddingBaseUrl && (
+                        <div>
+                          <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                            {t.form?.embeddingBaseUrl || 'Vector Base URL'}
+                          </label>
+                          <input
+                            type="text"
+                            value={embeddingBaseUrl}
+                            onChange={(e) => setEmbeddingBaseUrl(e.target.value)}
+                            placeholder="https://api.embedding.com/v1"
+                            className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                          />
+                        </div>
+                      )}
+                      {setEmbeddingApiKey && (
+                        <div>
+                          <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                            {t.form?.embeddingApiKey || 'Vector API Key'}
+                          </label>
+                          <input
+                            type="password"
+                            value={embeddingApiKey}
+                            onChange={(e) => setEmbeddingApiKey(e.target.value)}
+                            placeholder={t.form?.enterKey || 'Enter API key'}
+                            className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {setEmbeddingModel && (
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">
+                          {t.form?.embeddingModel || 'Vector Model'}
+                        </label>
+                        <input
+                          type="text"
+                          value={embeddingModel}
+                          onChange={(e) => setEmbeddingModel(e.target.value)}
+                          placeholder="bge-m3 / text-embedding-3-small"
+                          className="input-japanese block w-full px-2.5 py-1.5 text-sm rounded-md bg-transparent text-[var(--foreground)] focus:outline-none focus:border-[var(--accent-primary)]"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

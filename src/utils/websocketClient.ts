@@ -30,6 +30,12 @@ export interface ChatCompletionRequest {
   language?: string;
   excluded_dirs?: string;
   excluded_files?: string;
+  llm_base_url?: string;
+  llm_api_key?: string;
+  embedder_type?: string;
+  embedding_base_url?: string;
+  embedding_api_key?: string;
+  embedding_model?: string;
 }
 
 /**

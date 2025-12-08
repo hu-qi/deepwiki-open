@@ -106,7 +106,13 @@ const addTokensToRequestBody = (
   excludedDirs?: string,
   excludedFiles?: string,
   includedDirs?: string,
-  includedFiles?: string
+  includedFiles?: string,
+  llmBaseUrl?: string,
+  llmApiKey?: string,
+  embeddingBaseUrl?: string,
+  embeddingApiKey?: string,
+  embeddingModel?: string,
+  embedderType?: string
 ): void => {
   if (token !== '') {
     requestBody.token = token;
@@ -134,7 +140,24 @@ const addTokensToRequestBody = (
   if (includedFiles) {
     requestBody.included_files = includedFiles;
   }
-
+  if (llmBaseUrl) {
+    requestBody.llm_base_url = llmBaseUrl;
+  }
+  if (llmApiKey) {
+    requestBody.llm_api_key = llmApiKey;
+  }
+  if (embeddingBaseUrl) {
+    requestBody.embedding_base_url = embeddingBaseUrl;
+  }
+  if (embeddingApiKey) {
+    requestBody.embedding_api_key = embeddingApiKey;
+  }
+  if (embeddingModel) {
+    requestBody.embedding_model = embeddingModel;
+  }
+  if (embedderType) {
+    requestBody.embedder_type = embedderType;
+  }
 };
 
 const createGithubHeaders = (githubToken: string): HeadersInit => {
@@ -204,6 +227,12 @@ export default function RepoWikiPage() {
   const modelParam = searchParams.get('model') || '';
   const isCustomModelParam = searchParams.get('is_custom_model') === 'true';
   const customModelParam = searchParams.get('custom_model') || '';
+  const llmBaseUrlParam = searchParams.get('llm_base_url') || '';
+  const llmApiKeyParam = searchParams.get('llm_api_key') || '';
+  const embedderTypeParam = searchParams.get('embedder_type') || 'openai';
+  const embeddingBaseUrlParam = searchParams.get('embedding_base_url') || '';
+  const embeddingApiKeyParam = searchParams.get('embedding_api_key') || '';
+  const embeddingModelParam = searchParams.get('embedding_model') || '';
   const language = searchParams.get('language') || 'en';
   const repoHost = (() => {
     if (!repoUrl) return '';
@@ -260,6 +289,12 @@ export default function RepoWikiPage() {
   const [selectedModelState, setSelectedModelState] = useState(modelParam);
   const [isCustomSelectedModelState, setIsCustomSelectedModelState] = useState(isCustomModelParam);
   const [customSelectedModelState, setCustomSelectedModelState] = useState(customModelParam);
+  const [llmBaseUrl, setLlmBaseUrl] = useState(llmBaseUrlParam);
+  const [llmApiKey, setLlmApiKey] = useState(llmApiKeyParam);
+  const [embedderType, setEmbedderType] = useState(embedderTypeParam || 'openai');
+  const [embeddingBaseUrl, setEmbeddingBaseUrl] = useState(embeddingBaseUrlParam);
+  const [embeddingApiKey, setEmbeddingApiKey] = useState(embeddingApiKeyParam);
+  const [embeddingModel, setEmbeddingModel] = useState(embeddingModelParam);
   const [showModelOptions, setShowModelOptions] = useState(false); // Controls whether to show model options
   const excludedDirs = searchParams.get('excluded_dirs') || '';
   const excludedFiles = searchParams.get('excluded_files') || '';
@@ -555,7 +590,26 @@ Remember:
         };
 
         // Add tokens if available
-        addTokensToRequestBody(requestBody, currentToken, effectiveRepoInfo.type, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, language, modelExcludedDirs, modelExcludedFiles, modelIncludedDirs, modelIncludedFiles);
+        addTokensToRequestBody(
+          requestBody,
+          currentToken,
+          effectiveRepoInfo.type,
+          selectedProviderState,
+          selectedModelState,
+          isCustomSelectedModelState,
+          customSelectedModelState,
+          language,
+          modelExcludedDirs,
+          modelExcludedFiles,
+          modelIncludedDirs,
+          modelIncludedFiles,
+          llmBaseUrl,
+          llmApiKey,
+          embeddingBaseUrl,
+          embeddingApiKey,
+          embeddingModel,
+          embedderType
+        );
 
         // Use WebSocket for communication
         let content = '';
@@ -563,7 +617,9 @@ Remember:
         try {
           // Create WebSocket URL from the server base URL
           const serverBaseUrl = process.env.SERVER_BASE_URL || 'http://localhost:8001';
-          const wsBaseUrl = serverBaseUrl.replace(/^http/, 'ws')? serverBaseUrl.replace(/^https/, 'wss'): serverBaseUrl.replace(/^http/, 'ws');
+          const wsBaseUrl = serverBaseUrl.startsWith('https')
+            ? serverBaseUrl.replace(/^https/, 'wss')
+            : serverBaseUrl.replace(/^http/, 'ws');
           const wsUrl = `${wsBaseUrl}/ws/chat`;
 
           // Create a new WebSocket connection
@@ -696,7 +752,7 @@ Remember:
         setLoadingMessage(undefined); // Clear specific loading message
       }
     });
-  }, [generatedPages, currentToken, effectiveRepoInfo, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, modelExcludedDirs, modelExcludedFiles, language, activeContentRequests, generateFileUrl]);
+  }, [generatedPages, currentToken, effectiveRepoInfo, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, modelExcludedDirs, modelExcludedFiles, modelIncludedDirs, modelIncludedFiles, llmBaseUrl, llmApiKey, embeddingBaseUrl, embeddingApiKey, embeddingModel, embedderType, language, activeContentRequests, generateFileUrl]);
 
   // Determine the wiki structure from repository data
   const determineWikiStructure = useCallback(async (fileTree: string, readme: string, owner: string, repo: string) => {
@@ -852,7 +908,26 @@ IMPORTANT:
       };
 
       // Add tokens if available
-      addTokensToRequestBody(requestBody, currentToken, effectiveRepoInfo.type, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, language, modelExcludedDirs, modelExcludedFiles, modelIncludedDirs, modelIncludedFiles);
+      addTokensToRequestBody(
+        requestBody,
+        currentToken,
+        effectiveRepoInfo.type,
+        selectedProviderState,
+        selectedModelState,
+        isCustomSelectedModelState,
+        customSelectedModelState,
+        language,
+        modelExcludedDirs,
+        modelExcludedFiles,
+        modelIncludedDirs,
+        modelIncludedFiles,
+        llmBaseUrl,
+        llmApiKey,
+        embeddingBaseUrl,
+        embeddingApiKey,
+        embeddingModel,
+        embedderType
+      );
 
       // Use WebSocket for communication
       let responseText = '';
@@ -860,7 +935,9 @@ IMPORTANT:
       try {
         // Create WebSocket URL from the server base URL
         const serverBaseUrl = process.env.SERVER_BASE_URL || 'http://localhost:8001';
-        const wsBaseUrl = serverBaseUrl.replace(/^http/, 'ws')? serverBaseUrl.replace(/^https/, 'wss'): serverBaseUrl.replace(/^http/, 'ws');
+        const wsBaseUrl = serverBaseUrl.startsWith('https')
+          ? serverBaseUrl.replace(/^https/, 'wss')
+          : serverBaseUrl.replace(/^http/, 'ws');
         const wsUrl = `${wsBaseUrl}/ws/chat`;
 
         // Create a new WebSocket connection
@@ -945,6 +1022,7 @@ IMPORTANT:
           if (done) break;
           responseText += decoder.decode(value, { stream: true });
         }
+        responseText += decoder.decode();
       }
 
       if(responseText.includes('Error preparing retriever: Environment variable OPENAI_API_KEY must be set')) {
@@ -1180,7 +1258,7 @@ IMPORTANT:
     } finally {
       setStructureRequestInProgress(false);
     }
-  }, [generatePageContent, currentToken, effectiveRepoInfo, pagesInProgress.size, structureRequestInProgress, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, modelExcludedDirs, modelExcludedFiles, language, messages.loading, isComprehensiveView]);
+  }, [generatePageContent, currentToken, effectiveRepoInfo, pagesInProgress.size, structureRequestInProgress, selectedProviderState, selectedModelState, isCustomSelectedModelState, customSelectedModelState, modelExcludedDirs, modelExcludedFiles, modelIncludedDirs, modelIncludedFiles, llmBaseUrl, llmApiKey, embeddingBaseUrl, embeddingApiKey, embeddingModel, embedderType, language, messages.loading, isComprehensiveView]);
 
   // Fetch repository structure using GitHub or GitLab API
   const fetchRepositoryStructure = useCallback(async () => {
@@ -2324,6 +2402,12 @@ IMPORTANT:
               isCustomModel={isCustomSelectedModelState}
               customModel={customSelectedModelState}
               language={language}
+              llmBaseUrl={llmBaseUrl}
+              llmApiKey={llmApiKey}
+              embedderType={embedderType}
+              embeddingBaseUrl={embeddingBaseUrl}
+              embeddingApiKey={embeddingApiKey}
+              embeddingModel={embeddingModel}
               onRef={(ref) => (askComponentRef.current = ref)}
             />
           </div>
@@ -2352,6 +2436,18 @@ IMPORTANT:
         setIncludedDirs={setModelIncludedDirs}
         includedFiles={modelIncludedFiles}
         setIncludedFiles={setModelIncludedFiles}
+        llmBaseUrl={llmBaseUrl}
+        setLlmBaseUrl={setLlmBaseUrl}
+        llmApiKey={llmApiKey}
+        setLlmApiKey={setLlmApiKey}
+        embedderType={embedderType}
+        setEmbedderType={setEmbedderType}
+        embeddingBaseUrl={embeddingBaseUrl}
+        setEmbeddingBaseUrl={setEmbeddingBaseUrl}
+        embeddingApiKey={embeddingApiKey}
+        setEmbeddingApiKey={setEmbeddingApiKey}
+        embeddingModel={embeddingModel}
+        setEmbeddingModel={setEmbeddingModel}
         onApply={confirmRefresh}
         showWikiType={true}
         showTokenInput={effectiveRepoInfo.type !== 'local' && !currentToken} // Show token input if not local and no current token

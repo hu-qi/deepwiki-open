@@ -34,6 +34,20 @@ interface ModelSelectionModalProps {
   setIncludedFiles?: (value: string) => void;
   showFileFilters?: boolean;
   showWikiType: boolean;
+
+  // Service configuration
+  llmBaseUrl?: string;
+  setLlmBaseUrl?: (value: string) => void;
+  llmApiKey?: string;
+  setLlmApiKey?: (value: string) => void;
+  embedderType?: string;
+  setEmbedderType?: (value: string) => void;
+  embeddingBaseUrl?: string;
+  setEmbeddingBaseUrl?: (value: string) => void;
+  embeddingApiKey?: string;
+  setEmbeddingApiKey?: (value: string) => void;
+  embeddingModel?: string;
+  setEmbeddingModel?: (value: string) => void;
   
   // Token input for refresh
   showTokenInput?: boolean;
@@ -68,6 +82,18 @@ export default function ModelSelectionModal({
   includedFiles = '',
   setIncludedFiles,
   showFileFilters = false,
+  llmBaseUrl = '',
+  setLlmBaseUrl,
+  llmApiKey = '',
+  setLlmApiKey,
+  embedderType = 'openai',
+  setEmbedderType,
+  embeddingBaseUrl = '',
+  setEmbeddingBaseUrl,
+  embeddingApiKey = '',
+  setEmbeddingApiKey,
+  embeddingModel = '',
+  setEmbeddingModel,
   authRequired = false,
   authCode = '',
   setAuthCode,
@@ -88,6 +114,12 @@ export default function ModelSelectionModal({
   const [localExcludedFiles, setLocalExcludedFiles] = useState(excludedFiles);
   const [localIncludedDirs, setLocalIncludedDirs] = useState(includedDirs);
   const [localIncludedFiles, setLocalIncludedFiles] = useState(includedFiles);
+  const [localLlmBaseUrl, setLocalLlmBaseUrl] = useState(llmBaseUrl);
+  const [localLlmApiKey, setLocalLlmApiKey] = useState(llmApiKey);
+  const [localEmbedderType, setLocalEmbedderType] = useState(embedderType);
+  const [localEmbeddingBaseUrl, setLocalEmbeddingBaseUrl] = useState(embeddingBaseUrl);
+  const [localEmbeddingApiKey, setLocalEmbeddingApiKey] = useState(embeddingApiKey);
+  const [localEmbeddingModel, setLocalEmbeddingModel] = useState(embeddingModel);
   
   // Token input state
   const [localAccessToken, setLocalAccessToken] = useState('');
@@ -107,10 +139,16 @@ export default function ModelSelectionModal({
       setLocalIncludedDirs(includedDirs);
       setLocalIncludedFiles(includedFiles);
       setLocalSelectedPlatform(repositoryType);
+      setLocalLlmBaseUrl(llmBaseUrl);
+      setLocalLlmApiKey(llmApiKey);
+      setLocalEmbedderType(embedderType);
+      setLocalEmbeddingBaseUrl(embeddingBaseUrl);
+      setLocalEmbeddingApiKey(embeddingApiKey);
+      setLocalEmbeddingModel(embeddingModel);
       setLocalAccessToken('');
       setShowTokenSection(showTokenInput);
     }
-  }, [isOpen, provider, model, isCustomModel, customModel, isComprehensiveView, excludedDirs, excludedFiles, includedDirs, includedFiles, repositoryType, showTokenInput]);
+  }, [isOpen, provider, model, isCustomModel, customModel, isComprehensiveView, excludedDirs, excludedFiles, includedDirs, includedFiles, repositoryType, showTokenInput, llmBaseUrl, llmApiKey, embedderType, embeddingBaseUrl, embeddingApiKey, embeddingModel]);
 
   // Handler for applying changes
   const handleApply = () => {
@@ -123,6 +161,12 @@ export default function ModelSelectionModal({
     if (setExcludedFiles) setExcludedFiles(localExcludedFiles);
     if (setIncludedDirs) setIncludedDirs(localIncludedDirs);
     if (setIncludedFiles) setIncludedFiles(localIncludedFiles);
+    if (setLlmBaseUrl) setLlmBaseUrl(localLlmBaseUrl);
+    if (setLlmApiKey) setLlmApiKey(localLlmApiKey);
+    if (setEmbedderType) setEmbedderType(localEmbedderType);
+    if (setEmbeddingBaseUrl) setEmbeddingBaseUrl(localEmbeddingBaseUrl);
+    if (setEmbeddingApiKey) setEmbeddingApiKey(localEmbeddingApiKey);
+    if (setEmbeddingModel) setEmbeddingModel(localEmbeddingModel);
     
     // Pass token to onApply if needed
     if (showTokenInput) {
@@ -187,6 +231,18 @@ export default function ModelSelectionModal({
               setIncludedDirs={showFileFilters ? (value: string) => setLocalIncludedDirs(value) : undefined}
               includedFiles={localIncludedFiles}
               setIncludedFiles={showFileFilters ? (value: string) => setLocalIncludedFiles(value) : undefined}
+              llmBaseUrl={localLlmBaseUrl}
+              setLlmBaseUrl={setLocalLlmBaseUrl}
+              llmApiKey={localLlmApiKey}
+              setLlmApiKey={setLocalLlmApiKey}
+              embedderType={localEmbedderType}
+              setEmbedderType={setLocalEmbedderType}
+              embeddingBaseUrl={localEmbeddingBaseUrl}
+              setEmbeddingBaseUrl={setLocalEmbeddingBaseUrl}
+              embeddingApiKey={localEmbeddingApiKey}
+              setEmbeddingApiKey={setLocalEmbeddingApiKey}
+              embeddingModel={localEmbeddingModel}
+              setEmbeddingModel={setLocalEmbeddingModel}
             />
 
             {/* Token Input Section for refresh */}

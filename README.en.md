@@ -93,6 +93,8 @@ echo "CUSTOM_OPENAI_BASE_URL=your_base_url" >> .env
 echo "CUSTOM_OPENAI_MODEL_NAME=your_model_name" >> .env
 echo "CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model" >> .env
 echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
+# Optional: prefill GitCode PAT in the UI (trusted environments only)
+# echo "NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_pat" >> .env
 
 
 
@@ -100,6 +102,7 @@ echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
 docker-compose up
 ```
 
+> ⚠️ `NEXT_PUBLIC_GITCODE_ACCESSTOKEN` is bundled to the client; only use it in controlled/ trusted environments.
 > 💡 **Data Persistence Note:** Docker configuration mounts the `~/.adalflow` directory to persist:
 >
 > - Cloned repositories (`~/.adalflow/repos/`)
@@ -214,6 +217,11 @@ DEEPWIKI_CONFIG_DIR=/path/to/custom/config/dir
 # ====== Auth Mode (Optional) ======
 DEEPWIKI_AUTH_MODE=true              # Enable auth mode
 DEEPWIKI_AUTH_CODE=your_secret_code  # Auth code
+
+# ====== Runtime / Deploy Config (Optional) ======
+SERVER_BASE_URL=http://localhost:8001         # Base URL the frontend calls for backend APIs
+PYTHON_BACKEND_HOST=http://localhost:8001     # Python backend URL used by Next.js API routes
+NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_pat # Optional default GitCode PAT shown in the UI (trusted environments only)
 ```
 
 ## Testing Instructions

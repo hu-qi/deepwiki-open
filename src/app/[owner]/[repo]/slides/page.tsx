@@ -20,6 +20,12 @@ const addTokensToRequestBody = (
   isCustomModel: boolean = false,
   customModel: string = '',
   language: string = 'en',
+  llmBaseUrl?: string,
+  llmApiKey?: string,
+  embeddingBaseUrl?: string,
+  embeddingApiKey?: string,
+  embeddingModel?: string,
+  embedderType?: string
 ) => {
   if (token !== '') {
     requestBody.token = token;
@@ -33,6 +39,25 @@ const addTokensToRequestBody = (
   }
 
   requestBody.language = language;
+
+  if (llmBaseUrl) {
+    requestBody.llm_base_url = llmBaseUrl;
+  }
+  if (llmApiKey) {
+    requestBody.llm_api_key = llmApiKey;
+  }
+  if (embeddingBaseUrl) {
+    requestBody.embedding_base_url = embeddingBaseUrl;
+  }
+  if (embeddingApiKey) {
+    requestBody.embedding_api_key = embeddingApiKey;
+  }
+  if (embeddingModel) {
+    requestBody.embedding_model = embeddingModel;
+  }
+  if (embedderType) {
+    requestBody.embedder_type = embedderType;
+  }
 };
 
 interface Slide {
@@ -60,6 +85,12 @@ export default function SlidesPage() {
   const modelParam = searchParams.get('model') || '';
   const isCustomModelParam = searchParams.get('is_custom_model') === 'true';
   const customModelParam = searchParams.get('custom_model') || '';
+  const llmBaseUrlParam = searchParams.get('llm_base_url') || '';
+  const llmApiKeyParam = searchParams.get('llm_api_key') || '';
+  const embedderTypeParam = searchParams.get('embedder_type') || 'openai';
+  const embeddingBaseUrlParam = searchParams.get('embedding_base_url') || '';
+  const embeddingApiKeyParam = searchParams.get('embedding_api_key') || '';
+  const embeddingModelParam = searchParams.get('embedding_model') || '';
   const language = searchParams.get('language') || 'en';
 
   // Import language context for translations
@@ -258,7 +289,22 @@ Give me the numbered list with brief descriptions for each slide. Be creative bu
       };
 
       // Add tokens if available
-      addTokensToRequestBody(planRequestBody, token, repoInfo.type, providerParam, modelParam, isCustomModelParam, customModelParam, language);
+      addTokensToRequestBody(
+        planRequestBody,
+        token,
+        repoInfo.type,
+        providerParam,
+        modelParam,
+        isCustomModelParam,
+        customModelParam,
+        language,
+        llmBaseUrlParam,
+        llmApiKeyParam,
+        embeddingBaseUrlParam,
+        embeddingApiKeyParam,
+        embeddingModelParam,
+        embedderTypeParam
+      );
 
       // Use WebSocket for communication
       let planContent = '';
@@ -266,7 +312,9 @@ Give me the numbered list with brief descriptions for each slide. Be creative bu
       try {
         // Create WebSocket URL from the server base URL
         const serverBaseUrl = process.env.SERVER_BASE_URL || 'http://localhost:8001';
-        const wsBaseUrl = serverBaseUrl.replace(/^http/, 'ws')? serverBaseUrl.replace(/^https/, 'wss'): serverBaseUrl.replace(/^http/, 'ws');
+        const wsBaseUrl = serverBaseUrl.startsWith('https')
+          ? serverBaseUrl.replace(/^https/, 'wss')
+          : serverBaseUrl.replace(/^http/, 'ws');
         const wsUrl = `${wsBaseUrl}/ws/chat`;
 
         // Create a new WebSocket connection
@@ -534,7 +582,22 @@ Please return ONLY the HTML with no markdown formatting or code blocks. Just the
         };
 
         // Add tokens if available
-        addTokensToRequestBody(slideRequestBody, token, repoInfo.type, providerParam, modelParam, isCustomModelParam, customModelParam, language);
+        addTokensToRequestBody(
+          slideRequestBody,
+          token,
+          repoInfo.type,
+          providerParam,
+          modelParam,
+          isCustomModelParam,
+          customModelParam,
+          language,
+          llmBaseUrlParam,
+          llmApiKeyParam,
+          embeddingBaseUrlParam,
+          embeddingApiKeyParam,
+          embeddingModelParam,
+          embedderTypeParam
+        );
 
         // Use WebSocket for communication
         let slideContent = '';
@@ -542,7 +605,9 @@ Please return ONLY the HTML with no markdown formatting or code blocks. Just the
         try {
           // Create WebSocket URL from the server base URL
           const serverBaseUrl = process.env.SERVER_BASE_URL || 'http://localhost:8001';
-          const wsBaseUrl = serverBaseUrl.replace(/^http/, 'ws')? serverBaseUrl.replace(/^https/, 'wss'): serverBaseUrl.replace(/^http/, 'ws');
+          const wsBaseUrl = serverBaseUrl.startsWith('https')
+            ? serverBaseUrl.replace(/^https/, 'wss')
+            : serverBaseUrl.replace(/^http/, 'ws');
           const wsUrl = `${wsBaseUrl}/ws/chat`;
 
           // Create a new WebSocket connection

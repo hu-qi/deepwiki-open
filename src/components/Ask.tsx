@@ -41,6 +41,12 @@ interface AskProps {
   customModel?: string;
   language?: string;
   onRef?: (ref: { clearConversation: () => void }) => void;
+  llmBaseUrl?: string;
+  llmApiKey?: string;
+  embedderType?: string;
+  embeddingBaseUrl?: string;
+  embeddingApiKey?: string;
+  embeddingModel?: string;
 }
 
 const Ask: React.FC<AskProps> = ({
@@ -50,7 +56,13 @@ const Ask: React.FC<AskProps> = ({
   isCustomModel = false,
   customModel = '',
   language = 'en',
-  onRef
+  onRef,
+  llmBaseUrl = '',
+  llmApiKey = '',
+  embedderType = 'openai',
+  embeddingBaseUrl = '',
+  embeddingApiKey = '',
+  embeddingModel = ''
 }) => {
   const [question, setQuestion] = useState('');
   const [response, setResponse] = useState('');
@@ -62,6 +74,12 @@ const Ask: React.FC<AskProps> = ({
   const [selectedModel, setSelectedModel] = useState(model);
   const [isCustomSelectedModel, setIsCustomSelectedModel] = useState(isCustomModel);
   const [customSelectedModel, setCustomSelectedModel] = useState(customModel);
+  const [llmBaseUrlState, setLlmBaseUrlState] = useState(llmBaseUrl);
+  const [llmApiKeyState, setLlmApiKeyState] = useState(llmApiKey);
+  const [embedderTypeState, setEmbedderTypeState] = useState(embedderType || 'openai');
+  const [embeddingBaseUrlState, setEmbeddingBaseUrlState] = useState(embeddingBaseUrl);
+  const [embeddingApiKeyState, setEmbeddingApiKeyState] = useState(embeddingApiKey);
+  const [embeddingModelState, setEmbeddingModelState] = useState(embeddingModel);
   const [isModelSelectionModalOpen, setIsModelSelectionModalOpen] = useState(false);
   const [isComprehensiveView, setIsComprehensiveView] = useState(true);
 
@@ -111,6 +129,15 @@ const Ask: React.FC<AskProps> = ({
     providerRef.current = provider;
     modelRef.current = model;
   }, [provider, model]);
+
+  useEffect(() => {
+    setLlmBaseUrlState(llmBaseUrl);
+    setLlmApiKeyState(llmApiKey);
+    setEmbedderTypeState(embedderType || 'openai');
+    setEmbeddingBaseUrlState(embeddingBaseUrl);
+    setEmbeddingApiKeyState(embeddingApiKey);
+    setEmbeddingModelState(embeddingModel);
+  }, [llmBaseUrl, llmApiKey, embedderType, embeddingBaseUrl, embeddingApiKey, embeddingModel]);
 
   useEffect(() => {
     const fetchModel = async () => {
@@ -320,7 +347,13 @@ const Ask: React.FC<AskProps> = ({
         messages: newHistory.map(msg => ({ role: msg.role as 'user' | 'assistant', content: msg.content })),
         provider: selectedProvider,
         model: isCustomSelectedModel ? customSelectedModel : selectedModel,
-        language: language
+        language: language,
+        embedder_type: embedderTypeState,
+        ...(llmBaseUrlState ? { llm_base_url: llmBaseUrlState } : {}),
+        ...(llmApiKeyState ? { llm_api_key: llmApiKeyState } : {}),
+        ...(embeddingBaseUrlState ? { embedding_base_url: embeddingBaseUrlState } : {}),
+        ...(embeddingApiKeyState ? { embedding_api_key: embeddingApiKeyState } : {}),
+        ...(embeddingModelState ? { embedding_model: embeddingModelState } : {})
       };
 
       // Add tokens if available
@@ -562,7 +595,13 @@ const Ask: React.FC<AskProps> = ({
         messages: newHistory.map(msg => ({ role: msg.role as 'user' | 'assistant', content: msg.content })),
         provider: selectedProvider,
         model: isCustomSelectedModel ? customSelectedModel : selectedModel,
-        language: language
+        language: language,
+        embedder_type: embedderTypeState,
+        ...(llmBaseUrlState ? { llm_base_url: llmBaseUrlState } : {}),
+        ...(llmApiKeyState ? { llm_api_key: llmApiKeyState } : {}),
+        ...(embeddingBaseUrlState ? { embedding_base_url: embeddingBaseUrlState } : {}),
+        ...(embeddingApiKeyState ? { embedding_api_key: embeddingApiKeyState } : {}),
+        ...(embeddingModelState ? { embedding_model: embeddingModelState } : {})
       };
 
       // Add tokens if available
@@ -914,6 +953,18 @@ const Ask: React.FC<AskProps> = ({
         isComprehensiveView={isComprehensiveView}
         setIsComprehensiveView={setIsComprehensiveView}
         showFileFilters={false}
+        llmBaseUrl={llmBaseUrlState}
+        setLlmBaseUrl={setLlmBaseUrlState}
+        llmApiKey={llmApiKeyState}
+        setLlmApiKey={setLlmApiKeyState}
+        embedderType={embedderTypeState}
+        setEmbedderType={setEmbedderTypeState}
+        embeddingBaseUrl={embeddingBaseUrlState}
+        setEmbeddingBaseUrl={setEmbeddingBaseUrlState}
+        embeddingApiKey={embeddingApiKeyState}
+        setEmbeddingApiKey={setEmbeddingApiKeyState}
+        embeddingModel={embeddingModelState}
+        setEmbeddingModel={setEmbeddingModelState}
         onApply={() => {
           console.log('Model selection applied:', selectedProvider, selectedModel);
         }}

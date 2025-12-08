@@ -3,6 +3,7 @@ import { Noto_Sans_JP, Noto_Serif_JP, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 // Japanese-friendly fonts
 const notoSansJP = Noto_Sans_JP({
@@ -45,6 +46,7 @@ export default function RootLayout({
           </LanguageProvider>
         </ThemeProvider>
       </body>
+      <GoogleAnalytics gaId="G-SXPEB1RV0D" />
     </html>
   );
 }

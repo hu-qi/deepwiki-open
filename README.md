@@ -96,6 +96,8 @@ echo "CUSTOM_OPENAI_BASE_URL=your_base_url" >> .env
 echo "CUSTOM_OPENAI_MODEL_NAME=your_model_name" >> .env
 echo "CUSTOM_OPENAI_EMBEDDING_MODEL=your_embedding_model" >> .env
 echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
+# 可选：在前端默认填充 GitCode 访问令牌（仅适合可信环境）
+# echo "NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_pat" >> .env
 
 
 
@@ -103,6 +105,7 @@ echo "DEEPWIKI_EMBEDDER_TYPE=custom_openai" >> .env
 docker-compose up
 ```
 
+> ⚠️ `NEXT_PUBLIC_GITCODE_ACCESSTOKEN` 会被打包到前端代码中，仅在内网演示或受控环境下使用。
 > 💡 **数据持久化说明：** Docker 配置会挂载 `~/.adalflow` 目录以持久化：
 >
 > - 克隆的仓库（`~/.adalflow/repos/`）
@@ -217,6 +220,11 @@ DEEPWIKI_CONFIG_DIR=/path/to/custom/config/dir
 # ====== 授权模式（可选）======
 DEEPWIKI_AUTH_MODE=true              # 启用授权模式
 DEEPWIKI_AUTH_CODE=your_secret_code  # 授权码
+
+# ====== 运行/部署配置（可选）======
+SERVER_BASE_URL=http://localhost:8001         # 前端请求后端 API 的地址
+PYTHON_BACKEND_HOST=http://localhost:8001     # Next.js API 路由访问的 Python 服务地址
+NEXT_PUBLIC_GITCODE_ACCESSTOKEN=your_gitcode_pat # 可选：前端默认填充的 GitCode 访问令牌（仅适用于可信环境）
 ```
 
 ## 测试说明

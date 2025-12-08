@@ -1,4 +1,5 @@
 import logging
+import os
 import weakref
 import re
 from dataclasses import dataclass
@@ -9,6 +10,9 @@ import adalflow as adal
 
 from api.tools.embedder import get_embedder
 from api.prompts import RAG_SYSTEM_PROMPT as system_prompt, RAG_TEMPLATE
+
+from api.openai_client import OpenAIClient
+from api.dashscope_client import DashscopeClient
 
 # Create our own implementation of the conversation classes
 @dataclass
@@ -154,7 +158,18 @@ class RAG(adal.Component):
     """RAG with one repo.
     If you want to load a new repos, call prepare_retriever(repo_url_or_path) first."""
 
-    def __init__(self, provider="google", model=None, use_s3: bool = False):  # noqa: F841 - use_s3 is kept for compatibility
+    def __init__(
+        self,
+        provider="google",
+        model=None,
+        use_s3: bool = False,  # noqa: F841 - use_s3 is kept for compatibility
+        embedder_type_override: str = None,
+        llm_base_url: str = None,
+        llm_api_key: str = None,
+        embedding_base_url: str = None,
+        embedding_api_key: str = None,
+        embedding_model: str = None
+    ):
         """
         Initialize the RAG component.
 
@@ -162,17 +177,48 @@ class RAG(adal.Component):
             provider: Model provider to use (google, openai, openrouter, ollama)
             model: Model name to use with the provider
             use_s3: Whether to use S3 for database storage (default: False)
+            embedder_type_override: Optional override for embedder type
+            llm_base_url: Optional override for LLM service base URL
+            llm_api_key: Optional override for LLM service API key
+            embedding_base_url: Optional override for embedding service base URL
+            embedding_api_key: Optional override for embedding service API key
+            embedding_model: Optional override for embedding model name
         """
         super().__init__()
 
         self.provider = provider
         self.model = model
+        self.llm_base_url = llm_base_url
+        self.llm_api_key = llm_api_key
+        self.embedding_base_url = embedding_base_url
+        self.embedding_api_key = embedding_api_key
+        self.embedding_model = embedding_model
 
         # Import the helper functions
         from api.config import get_embedder_config, get_embedder_type
 
         # Determine embedder type based on current configuration
-        self.embedder_type = get_embedder_type()
+        self.embedder_type = embedder_type_override or get_embedder_type()
+        if (embedding_base_url or embedding_api_key or embedding_model) and (
+            embedder_type_override in (None, "openai", "custom_openai")
+        ):
+            # Explicit embedding overrides should use the OpenAI-compatible path
+            self.embedder_type = 'custom_openai'
+
+        # Fallback to configured/custom embedder when OPENAI_API_KEY is missing
+        if self.embedder_type == 'openai' and not os.environ.get("OPENAI_API_KEY"):
+            configured_embedder = get_embedder_type()
+            if configured_embedder != 'openai':
+                logger.info(
+                    "OPENAI_API_KEY missing, falling back to configured embedder type '%s'",
+                    configured_embedder
+                )
+                self.embedder_type = configured_embedder
+            elif os.environ.get("CUSTOM_OPENAI_API_KEY") or os.environ.get("EMBEDDING_API_KEY"):
+                logger.info(
+                    "OPENAI_API_KEY missing but custom embedding credentials found; using 'custom_openai' embedder"
+                )
+                self.embedder_type = 'custom_openai'
         self.is_ollama_embedder = (self.embedder_type == 'ollama')  # Backward compatibility
 
         # Check if Ollama model exists before proceeding
@@ -188,7 +234,12 @@ class RAG(adal.Component):
 
         # Initialize components
         self.memory = Memory()
-        self.embedder = get_embedder(embedder_type=self.embedder_type)
+        self.embedder = get_embedder(
+            embedder_type=self.embedder_type,
+            override_api_key=self.embedding_api_key,
+            override_base_url=self.embedding_base_url,
+            override_model=self.embedding_model
+        )
 
         self_weakref = weakref.ref(self)
         # Patch: ensure query embedding is always single string for Ollama
@@ -230,6 +281,14 @@ IMPORTANT FORMATTING RULES:
         
         # Extract client init kwargs if present (for custom OpenAI providers)
         client_init_kwargs = generator_config.get("client_init_kwargs", {})
+        model_client_class = generator_config["model_client"]
+
+        model_client_kwargs = {**client_init_kwargs}
+        if model_client_class in [OpenAIClient, DashscopeClient]:
+            if self.llm_api_key:
+                model_client_kwargs["api_key"] = self.llm_api_key
+            if self.llm_base_url:
+                model_client_kwargs["base_url"] = self.llm_base_url
 
         # Set up the main generator
         self.generator = adal.Generator(
@@ -240,7 +299,7 @@ IMPORTANT FORMATTING RULES:
                 "system_prompt": system_prompt,
                 "contexts": None,
             },
-            model_client=generator_config["model_client"](**client_init_kwargs),
+            model_client=model_client_class(**model_client_kwargs) if model_client_kwargs else model_client_class(),
             model_kwargs=generator_config["model_kwargs"],
             output_processors=data_parser,
         )
@@ -374,7 +433,10 @@ IMPORTANT FORMATTING RULES:
             excluded_dirs=excluded_dirs,
             excluded_files=excluded_files,
             included_dirs=included_dirs,
-            included_files=included_files
+            included_files=included_files,
+            embedding_api_key=self.embedding_api_key,
+            embedding_base_url=self.embedding_base_url,
+            embedding_model=self.embedding_model
         )
         logger.info(f"Loaded {len(self.transformed_docs)} documents for retrieval")
 

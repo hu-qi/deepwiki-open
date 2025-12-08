@@ -48,6 +48,12 @@ class ChatCompletionRequest(BaseModel):
     excluded_files: Optional[str] = Field(None, description="Comma-separated list of file patterns to exclude from processing")
     included_dirs: Optional[str] = Field(None, description="Comma-separated list of directories to include exclusively")
     included_files: Optional[str] = Field(None, description="Comma-separated list of file patterns to include exclusively")
+    llm_base_url: Optional[str] = Field(None, description="Optional override for LLM base URL")
+    llm_api_key: Optional[str] = Field(None, description="Optional override for LLM API key")
+    embedder_type: Optional[str] = Field(None, description="Override embedder type (openai, custom_openai, google, ollama)")
+    embedding_base_url: Optional[str] = Field(None, description="Override embedding service base URL")
+    embedding_api_key: Optional[str] = Field(None, description="Override embedding service API key")
+    embedding_model: Optional[str] = Field(None, description="Override embedding model name")
 
 async def handle_websocket_chat(websocket: WebSocket):
     """
@@ -74,7 +80,16 @@ async def handle_websocket_chat(websocket: WebSocket):
 
         # Create a new RAG instance for this request
         try:
-            request_rag = RAG(provider=request.provider, model=request.model)
+            request_rag = RAG(
+                provider=request.provider,
+                model=request.model,
+                embedder_type_override=request.embedder_type,
+                llm_base_url=request.llm_base_url,
+                llm_api_key=request.llm_api_key,
+                embedding_base_url=request.embedding_base_url,
+                embedding_api_key=request.embedding_api_key,
+                embedding_model=request.embedding_model
+            )
 
             # Extract custom file filter parameters if provided
             excluded_dirs = None

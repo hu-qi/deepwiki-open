@@ -30,6 +30,18 @@ interface ConfigurationModalProps {
   setIsCustomModel: (value: boolean) => void;
   customModel: string;
   setCustomModel: (value: string) => void;
+  llmBaseUrl: string;
+  setLlmBaseUrl: (value: string) => void;
+  llmApiKey: string;
+  setLlmApiKey: (value: string) => void;
+  embedderType: string;
+  setEmbedderType: (value: string) => void;
+  embeddingBaseUrl: string;
+  setEmbeddingBaseUrl: (value: string) => void;
+  embeddingApiKey: string;
+  setEmbeddingApiKey: (value: string) => void;
+  embeddingModel: string;
+  setEmbeddingModel: (value: string) => void;
 
   // Platform selection
   selectedPlatform: 'gitcode' | 'github' | 'gitlab' | 'bitbucket' ;
@@ -77,6 +89,18 @@ export default function ConfigurationModal({
   setIsCustomModel,
   customModel,
   setCustomModel,
+  llmBaseUrl,
+  setLlmBaseUrl,
+  llmApiKey,
+  setLlmApiKey,
+  embedderType,
+  setEmbedderType,
+  embeddingBaseUrl,
+  setEmbeddingBaseUrl,
+  embeddingApiKey,
+  setEmbeddingApiKey,
+  embeddingModel,
+  setEmbeddingModel,
   selectedPlatform,
   setSelectedPlatform,
   accessToken,
@@ -228,6 +252,18 @@ export default function ConfigurationModal({
                 setIncludedDirs={setIncludedDirs}
                 includedFiles={includedFiles}
                 setIncludedFiles={setIncludedFiles}
+                llmBaseUrl={llmBaseUrl}
+                setLlmBaseUrl={setLlmBaseUrl}
+                llmApiKey={llmApiKey}
+                setLlmApiKey={setLlmApiKey}
+                embedderType={embedderType}
+                setEmbedderType={setEmbedderType}
+                embeddingBaseUrl={embeddingBaseUrl}
+                setEmbeddingBaseUrl={setEmbeddingBaseUrl}
+                embeddingApiKey={embeddingApiKey}
+                setEmbeddingApiKey={setEmbeddingApiKey}
+                embeddingModel={embeddingModel}
+                setEmbeddingModel={setEmbeddingModel}
               />
             </div>
 
